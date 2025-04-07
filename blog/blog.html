@@ -2,21 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="blog_css.css" 
+    rel="stylesheet">
     <title>Blog</title>
 </head>
 <body>
-    <!-- Definir el encabezado de la página -->
     <header>
+    <!-- Definir el encabezado de la página -->
     <h1 style="text-align:center;">HTML BLOG &#128187;</h1>
-    <h3>¡Bienvenido a mi blog de HTML! </h3>
     </header>
+
+    <div class = "container">
+    <h2>¡Bienvenido a mi blog de HTML! </h2>
     <p>Esta es una página web sencilla utilizando solo HTML. Incorpora los elementos más comunes de este lenguaje.<br>Se explica brevemente el flujo de trabajo de git/github y de los comandos de terminal que hemos usado en clase.<br></p>
     <hr>
+    </div>
 
+    <nav  class = "container"> 
     <!-- Definir el menú de navegación a otras páginas (archivos) -->
-    <h2>Menú de navegación</h2>
-    <nav><ul>
+    <h2 id = "segundo_h2">Menú de navegación</h2>
+    <ul>
     <li><a href="flujodetrabajo.html">Flujo de trabajo de git y github</a></li>
     <li><a href="comandosterminal.html">Comandos de terminal</a></li>
     </ul></nav>

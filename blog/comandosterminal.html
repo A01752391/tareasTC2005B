@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="blog_css.css" 
+    rel="stylesheet">
     <title>Comandos de terminal</title>
 </head>
 <body>
-    <!-- Definir el encabezado de la página -->
     <header>
+      <!-- Definir el encabezado de la página -->
         <h1 style="text-align:center;">Comandos de terminal</h1>
         <a href="blog.html"> Regresar al inicio</a> <!-- Crear un link para volver a la página inicial -->
         <p><br>A continuación, se hablará de los comandos de terminal que se han visto en clase. Concretamente se abarcará lo siguiente:</p> 
@@ -16,89 +17,91 @@
        </ol>
         </header>
 
-        <!-- Definir el contenido principal del cuerpo de la página -->
         <main>
-        <h2><br>Comandos básicos para la terminal</h2> <!-- Información comandos básicos -->
+        <!-- Definir el contenido principal del cuerpo de la página -->
+        <h2>Comandos básicos para la terminal</h2> <!-- Información comandos básicos -->
         <p>Los siguientes comandos permiten moverse a través de la terminal.</p>
         <table> <!-- Tabla de comandos y funciones -->
-            <tr>
+          <thead>
               <th>Comando</th>
               <th>Función</th>
-            </tr>
+            </thead>
             <tr>
-              <td>pwd</td>
+              <td class = "container2">pwd</td>
               <td>Imprimir el working directory.</td>
             </tr>
             <tr>
-                <td>ls</td>
+                <td class = "container2">ls</td>
                 <td>Listado de archivos y carpetas.</td>
               </tr>
               <tr>
-                <td>cd ..</td>
+                <td class = "container2">cd ..</td>
                 <td>Regresar al directorio anterior.</td>
               </tr>
               <tr>
-                <td>cd name_directory</td>
+                <td class = "container2">cd name_directory</td>
                 <td>Cambiar al directorio dado.</td>
               </tr>
               <tr>
-                <td>clear</td>
+                <td class = "container2">clear</td>
                 <td>Limpiar la terminal.</td>
               </tr>
               <tr>
-                <td>history</td>
+                <td class = "container2">history</td>
                 <td>Historial de los comandos introducidos.</td>
               </tr>
-                <td>man name_command</td>
+                <td class = "container2">man name_command</td>
                 <td>Mostrar el manual para el comando dado.</td>
               </tr>
               <tr>
-                <td>cat nombre_archivo.txt</td>
+                <td class = "container2">cat nombre_archivo.txt</td>
                 <td>Ver contenido de un archivo.</td>
               </tr>
         </table>    
 
-        <h2><br>Comandos para modifcar elementos desde la terminal</h2> <!-- Información comandos para hacer modificaciones -->
-        <p>Los siguientes comandos permiten crar, modificar o eliminar archivos o directorios desde la terminal.</p>
+        <h2>Comandos para modifcar elementos desde la terminal</h2> <!-- Información comandos para hacer modificaciones -->
+        <p>Los siguientes comandos permiten crear, modificar o eliminar archivos o directorios desde la terminal.</p>
         <table> <!-- Tabla de comandos y funciones -->
-            <tr>
+            <thead>
               <th>Comando</th>
               <th>Función</th>
-            </tr>
+            </thead>
             <tr>
-              <td>mkdir nombre_directorio</td>
+              <td class = "container2">mkdir nombre_directorio</td>
               <td>Crear un directorio con el nombre dado.</td>
             </tr>
             <tr>
-               <td>touch nombre_archivo</td>
+               <td class = "container2">touch nombre_archivo</td>
                <td>Crear un archivo con el nombre dado.</td>
             </tr>
             <tr>
-               <td>cp nombre_directorio nombre_nuevo</td>
+               <td class = "container2">cp nombre_directorio nombre_nuevo</td>
                <td>Crear una copia del archivo dado con el nombre dado.</td>
             </tr>
             <tr>
-               <td>mv nombre_archivo nombre_directorio</td>
+               <td class = "container2">mv nombre_archivo nombre_directorio</td>
                <td>Mover un archivo a otro directorio, o renombrarlo.</td>
             </tr>
             <tr>
-               <td>vi nombre_archivo</td>
+               <td class = "container2">vi nombre_archivo</td>
                <td>Modificar un archivo.</td>
             </tr>
             <tr>
-               <td>rm - r nombre_directorio</td>
+               <td class = "container2">rm - r nombre_directorio</td>
                <td>Borrar un directorio.</td>
             </tr>
             <tr>
-                <td>rm nombre_archivo</td>
+                <td class = "container2">rm nombre_archivo</td>
                 <td>Borrar un archivo.</td>
              </tr>
-        </table>    
+        </table>  
+        <hr>  
         </main>
 
-        <!-- Definir el pie de página -->
+        
         <footer>
-            <p><small><br>Referencias: Lo visto en clase.</small></p>
+        <!-- Definir el pie de página -->
+          <p><small>Referencias: Lo visto en clase.</small></p>
         </footer>
 </body>
 </html>

@@ -1,0 +1,99 @@
+/* Definir estilo para la página en general */
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif; /* Definir fuente de letra y sus equivalencias */
+    overflow: scroll;
+}
+
+/* Definir estilo para header 1 */
+h1 {
+    color: rgb(255, 20, 147); /* Definir color */
+    border-top: 10px;
+}
+
+/* Definir estilo para header 2 */
+h2 {
+    color: rgb(45, 193, 161); /* Definir color */
+
+}
+
+/* Definir estilo para otro header 2 */
+#segundo_h2 {
+    color: rgb(131, 79, 255); /* Definir color */
+    border-top: 10px;
+}
+
+/* Definir estilo para header 2 de git */
+#git_h2 {
+    color: rgb(255, 255, 255); /* Definir color */
+    border-top: 10px;
+    text-align: center;
+    height: auto;
+    width: 150px;
+    background: rgb(255, 115, 0);
+    border-radius: 30px;
+}
+
+/* Definir estilo para header 2 de GitHub */
+#github_h2 {
+    color: rgb(255, 255, 255); /* Definir color */
+    border-top: 10px;
+    text-align: center;
+    height: auto;
+    width: 150px;
+    background: rgb(76, 49, 210);
+    border-radius: 30px;
+}
+
+
+.container {
+    margin: 10px;
+    padding: 10px;
+}
+
+table, th, td {
+    border: 1px solid rgb(50, 60, 144);
+}
+
+.container2 {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 560;
+}
+
+footer {
+    border-top: 50px;
+    font-style: normal;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRnDcbaHbsqRrMJi_J5GkWB4NV3nQhTDfYUQ&s");
+    background-repeat: repeat;
+    background-size: 10px 10px;
+    height: 50px;
+    width: auto;
+}
+
+/* Definir estilo para div 
+div { 
+    border: 2px dashed black;
+    margin: 10px;
+    padding: 10px;
+} */
+
+/* Definir estilo para <p> div 
+div p { 
+    margin: 10px;
+    padding: 20px;
+} */
+
+/* Definir estilo para nav 
+nav {
+    border: 2px solid black;
+} */
+
+/* Definir estilo para <hr> div  */
+div hr { 
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+/* Definir estilo para <li> div  */
+nav li{
+    list-style: square inside;
+}
