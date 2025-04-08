@@ -1,0 +1,85 @@
+/* Definir estilo para la página en general */
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif; /* Definir fuente de letra y sus equivalencias */
+}
+
+/* Definir estilo para header 1 */
+h1 {
+    color: rgb(255, 20, 147);
+    border-right: 10px;
+    border-bottom: 10px;
+    border-left: 10px;
+}
+
+/* Definir estilo para header 2 */
+h2 {
+    padding: 5px;
+    color: white;
+    text-align: center;
+    height: auto;
+    width: 450px;
+    background: rgb(45, 193, 161);
+    border-radius: 30px;
+}
+
+/* Definir estilo para otro header 2 */
+#segundo_h2 {
+    padding: 5px;
+    color: white;
+    border-top: 40px;
+    text-align: center;
+    height: auto;
+    width: 450px;
+    background: rgb(131, 79, 255);
+    border-radius: 30px;
+}
+
+/* Definir estilo para header 3 */
+h3 {
+    margin-top: 35px;
+    padding-left: 30px;
+    color: rgb(23, 107, 140); /* Definir color */
+}
+
+/* Definir estilo para header 4 */
+h4 {
+    padding-left: 30px;
+    color: rgb(220, 131, 30); /* Definir color */
+}
+
+/* Definir estilo para todos los div's */
+div {
+    padding-left: 30px;
+}
+
+/* Definir estilo para las listas en main */
+main li {
+    list-style: square inside;
+    font-style: normal;
+}
+
+/* Definir estilo para las tablas */
+table, th, td {
+    font-size: 12px;
+    border: 1px solid rgb(50, 60, 144);
+}
+
+#td_codigo {
+    font-size: 13px;
+    font-weight: 550;
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid rgb(50, 60, 144);
+}
+
+/* Definir estilo para footer */
+footer {
+    border: 20px;
+    font: 1rem "Fira Sans";
+    font-weight: bold;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRnDcbaHbsqRrMJi_J5GkWB4NV3nQhTDfYUQ&s");
+    background-repeat: repeat;
+    background-size: 10px 10px;
+    height: 50px;
+    width: auto;
+    overflow: scroll;
+}

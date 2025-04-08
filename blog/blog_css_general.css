@@ -1,7 +1,6 @@
 /* Definir estilo para la página en general */
 * {
     font-family: Verdana, Geneva, Tahoma, sans-serif; /* Definir fuente de letra y sus equivalencias */
-    overflow: scroll;
 }
 
 /* Definir estilo para header 1 */
@@ -12,14 +11,24 @@ h1 {
 
 /* Definir estilo para header 2 */
 h2 {
-    color: rgb(45, 193, 161); /* Definir color */
-
+    color: white; /* Definir color */
+    border-top: 10px;
+    text-align: center;
+    height: auto;
+    width: 800px;
+    background: rgb(45, 193, 161);
+    border-radius: 30px;
 }
 
-/* Definir estilo para otro header 2 */
-#segundo_h2 {
-    color: rgb(131, 79, 255); /* Definir color */
+/* Definir estilo para header 2 */
+#blog_h2 {
+    color: white; /* Definir color */
     border-top: 10px;
+    text-align: center;
+    height: auto;
+    width: 400px;
+    background: rgb(131, 79, 255); /* Definir color */
+    border-radius: 30px;
 }
 
 /* Definir estilo para header 2 de git */
@@ -43,7 +52,6 @@ h2 {
     background: rgb(76, 49, 210);
     border-radius: 30px;
 }
-
 
 .container {
     margin: 10px;

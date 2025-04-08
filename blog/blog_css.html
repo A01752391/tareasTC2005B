@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="blog_css_tarea.css" 
+    rel="stylesheet">
+    <title>Blog CSS</title>
+</head>
+<body>
+    
+    <header>
+        <!-- Definir el encabezado de la página -->
+        <h1 style="text-align:center;">Blog CSS &#x1F3A8</h1>
+        <a href="blog.html"> Regresar al inicio</a> <!-- Crear un link para volver a la página inicial -->
+    </header>
+
+    <main>
+        <!-- Definir el contenido principal del cuerpo de la página -->
+        <h2>¿Qué es CSS?</h2> <!-- Información de CSS -->
+            <p><strong>CSS</strong>, es el acrónimo para <strong>Cascading Style Sheets</strong>, y es utilizado para determinar la presentación de un documento escrito en HTML o XML. Concretamente, permite definir cómo deben de verse los elementos en la pantalla en términos de diseño, color, fuentes, márgenes, espaciados, entre otros aspectos visuales de una página web.</p>
+
+        <h2 id = "segundo_h2">Elementos que lo conforman</h2> <!-- Elementos que conforman CSS -->
+            <h3>Selectores</h3>
+            <div>
+                <p>Un selector permite apuntar a un elemento o grupo de elementos HTML a los que se les aplicarán estilos definidos. No tiene ninguna restricción sobre qué elementos son seleccionados.</p>
+                <ul>
+                    <li><strong>Selector de tipo:</strong> Permite seleccionar todos los elementos de un tipo específico</li>
+                    <li><strong>Selector de clase:</strong> Permite seleccionar todos los elementos que tienen una clase específica. Se define utilizando un <b>punto (.)</b> antes del nombre de la clase.</li>
+                    <li><strong>Selector de identificador:</strong>  Selecciona un único elemento que tenga un ID único y específico, determinado con <b>#</b> antes del nombre del ID.</li>
+                    <li><strong>Selector universal:</strong>  Selecciona todos los elementos en una página, determinado con <b>* { }</b> antes de poner los elementos que se definirán.</li>
+                </ul>
+                <h4>Diferencias</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Selector</th>
+                                <th>Caso</th>
+                                <th>Sintaxis</th>
+                                <th>Ejemplo</th>
+                            </tr>
+                        </thead>
+                            <tr>
+                                <td>Selector por tipo</td>
+                                <td>Aplica a todos los elementos del tipo.</td>
+                                <td id="td_codigo">elemento</td>
+                                <td id="td_codigo">p { color: red; }</td>
+                            </tr>
+                            <tr>
+                                <td>Selector por clase</th>
+                                <td>Aplica a elementos con la misma clase.</td>
+                                <td id="td_codigo">.clase</td>
+                                <td id="td_codigo">.mi-clase { font-size: 16px; }</td>
+                            </tr>
+                            <tr>
+                                <td>Selector por identificador</td>
+                                <td>Aplica a un solo elemento único con ese ID.</td>
+                                <td id="td_codigo">#id</td>
+                                <td id="td_codigo">#mi-id { background-color: yellow; }</td>
+                            </tr>
+                    </table>
+            </div>
+            <h3>Propiedades en CSS</h3>
+                <div>
+                <p>Son atributos específicos que se quieren modificar o aplicar a un elemento. Las más comunes son:</p>
+                <ul>
+                    <li><strong>color:</strong> Define el color del texto.</li>
+                    <li><strong>font-size:</strong> Define el tamaño de la fuente.</li>
+                    <li><strong>background-color:</strong> Define el color de fondo.</li>
+                    <li><strong>margin:</strong> Define el margen externo de un elemento.</li>
+                    <li><strong>padding:</strong> Define el espaciado interno de un elemento.</li>
+                    <li><strong>border:</strong> Define el borde alrededor de un elemento.</li>
+                </ul>
+            </div>
+
+            <h3>Valores</h3>
+            <div>
+                <p>Al trabajar con propiedades, es el valor que se le asigna para definir su comportamiento. Los valores pueden ser diferentes tipos, dependiendo de la propiedad que se está utilizando. Algunos ejemplos de valores son:</p>
+                <ul>
+                    <li>Colores: red, #ff0000, rgb(255, 0, 0)</li>
+                    <li>Tamaños: 12px, 2em, 50%</li>
+                    <li>Porcentajes: 50%, 100%</li>
+                    <li>Unidades de medida: px, em, rem, %</li>
+                </ul>
+            </div>
+    </main>
+    <footer>
+        <!-- Definir el pie de página -->
+        <p><small>Referencias: <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference#index"> CSS reference - mozilla.org</a> </small></p>
+    </footer>
+</html>
