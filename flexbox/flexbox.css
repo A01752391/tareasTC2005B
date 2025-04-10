@@ -1,0 +1,22 @@
+div {
+    border: 2px black solid;
+    margin: 10px;
+}
+.container {
+    display: flex; /* Hace al contenedor flexible */
+    flex-direction: row; /* Determina si se acomodarán los elementos como row o column */
+    justify-content: center; /* Determina el acomodo de los elementos en un eje */
+    align-items: center; /* Determina el acomodo de los elementos en otro eje */
+}
+
+#box1 {
+    flex: 2; /* Determina el espacio que usará cada caja */
+}
+
+#box2 {
+    flex: 1;
+}
+
+#box3 {
+    flex: 1;
+}
