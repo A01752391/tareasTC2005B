@@ -1,0 +1,33 @@
+body {
+    background-color: rgb(255, 255, 239);
+
+    height: 100vh;
+    margin: 0px;
+}
+
+div {
+    border: 2px black solid;
+    padding: 5px;
+    background-color: rgb(201, 228, 255);
+}
+
+#gridContainer {
+    display: grid;
+    height: 100%;
+
+    grid-template-rows: 1fr 2fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+
+    grid-template-areas: 
+    "header header _";
+}
+
+#gridItem1 {
+    grid-area: header;
+}
+
+#gridItem2 {
+    grid-column: 2;
+    grid-row: 2 / 5;
+}

@@ -1,0 +1,61 @@
+body {
+    background-color: rgb(3, 29, 68);
+    color: rgb(255, 255, 255);
+    height: 90vh;
+    margin: 30px;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+div {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#gridContainer {
+    background-color: rgb(3, 29, 68);
+
+    display: grid;
+    height: 100%;
+
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 30px;
+
+    grid-template-areas: 
+    "header header header";
+}
+
+#grid1 {
+    background-color: rgb(234, 121, 65);
+    grid-area: header;
+    align-items: center;
+}
+
+#grid2 {
+    background-color: rgb(17, 126, 91);
+    grid-row: 2 / 4;
+    align-items: center;
+}
+
+#grid3 {
+    background-color: rgb(43, 189, 143);
+    grid-column: 2 / 4;
+    align-items: center;
+}
+
+#grid4 {
+    background-color: rgb(234, 91, 65);
+    align-items: center;
+}
+
+#grid5 {
+    background-color: rgb(234, 130, 65);
+    align-items: center;
+}
+
+a, a:hover, a:active, a:visited { 
+    color: white; 
+}
