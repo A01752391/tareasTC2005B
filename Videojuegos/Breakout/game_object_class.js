@@ -27,6 +27,8 @@ let ctx;
 let game;
 
 // Classes for the Pong game
+
+// Class to control de ball
 class Ball extends GameObject {
     constructor(position, width, height, color) {
         super(position, width, height, color, "ball");
@@ -40,7 +42,7 @@ class Ball extends GameObject {
 
     initVelocity() {
         // Determine the vector of velocity with a random angle in the range [-45°, 45°]
-        const angle = Math.random() * (Math.PI / 2 - Math.PI / 4);
+        const angle = (Math.random() * Math.PI / 4) + Math.PI / 2;
         this.velocity = new Vec(Math.cos(angle), Math.sin(angle)).times(initialSpeed);
         this.velocity = this.velocity.times(Math.random() > 0.5 ? 1 : -1); // Randomly select the direction on x (left or right)
         this.inPlay = true;
@@ -54,6 +56,7 @@ class Ball extends GameObject {
     }
 }
 
+// Class to control the paddle
 class Paddle extends GameObject {
     constructor(position, width, height, color) {
         super(position, width, height, color, "paddle");
@@ -62,109 +65,123 @@ class Paddle extends GameObject {
 
     update(deltaTime) {
         this.position = this.position.plus(this.velocity.times(deltaTime));
-        if (this.position.y < 0){
-            this.position. y = 0;
-        } else if (this.position.y + this.height > canvasHeight){
-            this.position.y = canvasHeight - this.height;
+        if (this.position.x < 0){
+            this.position. x = 0;
+        } else if (this.position.x + this.width > canvasWidth){
+            this.position.x = canvasWidth- this.width;
         }
     }
 }
+
+// Class to control each block
+class Block extends GameObject {
+    constructor(position, width, height, color) {
+        super(position, width, height, color, "block");
+    }
+}
+
+// Class to controll all blocks
+class BlockManager {
+    constructor(rows, columns, blockWidth, blockHeight, colors, marginX = 5, marginY = 5, offsetX = 2.5, offsetY = 48) {
+        this.blocks = [];
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < columns; col++) {
+                const x = offsetX + col * (blockWidth + marginX);
+                const y = offsetY + row * (blockHeight + marginY);
+                const color = colors[row % colors.length];
+
+                const block = new Block(new Vec(x, y), blockWidth, blockHeight, color);
+                this.blocks.push(block);
+            }
+        }
+    }
+
+    draw(ctx) {
+        this.blocks.forEach(block => block.draw(ctx));
+    }
+
+}
+
 
 // Class that controls all the objects in the game
 class Game {
     constructor(canvasWidth, canvasHeight) {
         // Create the objects of the game
         // Elements
-        this.ball = new Ball(new Vec(canvasWidth / 2, canvasHeight / 2), 20, 20, "black");
-        this.paddleLeft = new Paddle(new Vec(20, canvasHeight / 2 - 50), 50, 100, "green");
-        this.paddleRight = new Paddle(new Vec(canvasWidth - 70, canvasHeight / 2 - 50), 50, 100, "green");
-        
+        this.ball = new Ball(new Vec(canvasWidth / 2, canvasHeight / 2), 20, 20, "white");
+        this.paddle = new Paddle(new Vec(canvasWidth / 2 - 55, canvasHeight - 60), 110, 30, "black");
+        this.blockManager = new BlockManager(6, 10, 75, 20, ["red", "orange", "yellow", "green", "blue", "purple"]);
+
         // Borders
-        this.topBorder = new GameObject(new Vec(0,0), canvasWidth, 10, "red", "barrier");
-        this.bottomBorder = new GameObject(new Vec(0,canvasHeight - 10), canvasWidth, 10, "red");
+        this.topBorder = new GameObject(new Vec(0,0), canvasWidth, 40, "black", "barrier");
+        this.bottomBorder = new GameObject(new Vec(0,canvasHeight - 10), canvasWidth, 10, "#87ceeb", "barrier");
         
-        this.goalLeft = new GameObject(new Vec(0,0), 10, canvasWidth, "white", "goal");
-        this.goalRight = new GameObject(new Vec(canvasWidth - 10, 0), 10, canvasHeight, "white", "goal");
+        this.leftBorder = new GameObject(new Vec(0,0), 10, canvasWidth, "#87ceeb", "barrier");
+        this.rightBorder = new GameObject(new Vec(canvasWidth - 10, 0), 10, canvasHeight, "#87ceeb", "barrier");
         
         // Score text
-        this.scoreLeft = new TextLabel(new Vec(200, 100), "30px Arial", "white");
-        this.scoreRight = new TextLabel(new Vec(600, 100), "30px Arial", "white");
+        this.score = new TextLabel(new Vec(5, 40), "30px Arial", "white");
 
         // Initialize points
-        this.pointsLeft = 0;
-        this.pointsRight = 0;
+        this.points = 0;
 
         this.createEventListeners();
     }
 
     update(deltaTime) {
-        this.paddleLeft.update(deltaTime);
-        this.paddleRight.update(deltaTime);
+        this.paddle.update(deltaTime);
         this.ball.update(deltaTime); 
 
-        if (boxOverlap(this.ball, this.paddleRight) || boxOverlap(this.ball, this.paddleLeft)) {
+        if (boxOverlap(this.ball, this.paddle)) {
             this.ball.velocity.x *= -1;
         }
-        if (boxOverlap(this.ball, this.topBorder) || boxOverlap(this.ball, this.bottomBorder)) {
+        if (boxOverlap(this.ball, this.leftBorder) || boxOverlap(this.ball, this.rightBorder)) {
+            this.ball.velocity.x *= -1;
+        }
+        if (boxOverlap(this.ball, this.topBorder)) {
             this.ball.velocity.y *= -1;
         }
-        if (boxOverlap(this.ball, this.goalLeft)){
-            this.pointsRight += 1; 
+        if (boxOverlap(this.ball, this.bottomBorder)) {
+            this.points -= 1;
             this.ball.reset();
-            console.log(`Score: ${this.pointsLeft}  |  ${this.pointsRight}`);
-        }
-        if (boxOverlap(this.ball, this.goalRight)){
-            this.pointsLeft += 1;
-            this.ball.reset();
-            console.log(`Score: ${this.pointsLeft}  |  ${this.pointsRight}`);
+            console.log(`Score ${this.points}`);
         }
     }
 
     draw(ctx) {
         // Draw objects on the canvas
-        this.scoreLeft.draw(ctx, `${this.pointsLeft}`);
-        this.scoreRight.draw(ctx, `${this.pointsRight}`);
+        this.score.draw(ctx, `${this.points}`);
     
-        this.goalLeft.draw(ctx);
-        this.goalRight.draw(ctx);
+        this.leftBorder.draw(ctx);
+        this.rightBorder.draw(ctx);
         this.topBorder.draw(ctx);
         this.bottomBorder.draw(ctx);
 
-        this.paddleLeft.draw(ctx);
-        this.paddleRight.draw(ctx);
+        this.blockManager.draw(ctx);
+        this.paddle.draw(ctx);
         this.ball.draw(ctx);
     }
 
     createEventListeners() {
         // Determine events according to the interaction of the user
         window.addEventListener('keydown', (event) => {
-            if (event.key === "q") {
-                this.paddleLeft.velocity.y = -paddleVelocity;
-            }
             if (event.key === "a") {
-                this.paddleLeft.velocity.y = paddleVelocity;
+                this.paddle.velocity.x = -paddleVelocity;
             }
-            if (event.key === "o") {
-                this.paddleRight.velocity.y = -paddleVelocity;
-            }
-            if (event.key === "l") {
-                this.paddleRight.velocity.y = paddleVelocity;
+            if (event.key === "s") {
+                this.paddle.velocity.x = paddleVelocity;
             }
         });
 
         window.addEventListener('keyup', (event) => {
-            if (event.key === "q") {
-                this.paddleLeft.velocity.y = 0;
-            }
             if (event.key === "a") {
-                this.paddleLeft.velocity.y = 0;
+                this.paddle.velocity.x = 0;
             }
-            if (event.key === "o") {
-                this.paddleRight.velocity.y = 0;
+            if (event.key === "s") {
+                this.paddle.velocity.x = 0;
             }
-            if (event.key === "l") {
-                this.paddleRight.velocity.y = 0;
-            }
+
             // Space to initialize the game
             if (event.key == " ") {
                 if(!this.ball.inPlay){
