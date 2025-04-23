@@ -15,7 +15,7 @@ Este es un juego, en JavaScript, cuya dinámica gira alrededor de recojer moneda
 2. Asegúrate de que la carpeta `assets` con las imágenes esté correctamente ubicada en el mismo directorio que el archivo HTML.
 3. El juego se inicializa automáticamente al cargar la página.
 
-Una alternativa a esto es acceder al juego a través de este [link](spritesAnimados.html)
+Una alternativa a esto es acceder al juego a través de este [link](https://a01752391.github.io/tareasTC2005B/Videojuegos/SpritesAnimados/spritesAnimados.html)
 
 ## Controles del Juego
 
