@@ -1,7 +1,7 @@
 /*
 * Miranda Urban Solano
 * 
-* 7 de abril de 2025
+* 23 de abril de 2025
 *
 */
 
@@ -18,7 +18,6 @@ let oldTime;
 const paddleVelocity = 0.8;
 const speedIncrease = 1.05;
 const initialSpeed = 0.2;
-
 
 // Context of the Canvas
 let ctx;
