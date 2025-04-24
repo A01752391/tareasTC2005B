@@ -1,7 +1,7 @@
 /*
 * Miranda Urban Solano
 * 
-* 23 de abril de 2025
+* 30 de abril de 2025
 *
 */
 
@@ -40,17 +40,21 @@ class Ball extends GameObject {
     }
 
     initVelocity() {
-        // Determine the vector of velocity with a random angle in the range [-45°, 45°]
-        const angle = (Math.random() * Math.PI / 4) + Math.PI / 2;
-        this.velocity = new Vec(Math.cos(angle), Math.sin(angle)).times(initialSpeed);
-        this.velocity = this.velocity.times(Math.random() > 0.5 ? 1 : -1); // Randomly select the direction on x (left or right)
+        if (this.savedVelocity) {
+            this.velocity = this.savedVelocity;
+            this.savedVelocity = null;
+        } else {
+            const angle = Math.random() * Math.PI / 3 + Math.PI / 6;
+            this.velocity = new Vec(Math.cos(angle), Math.sin(angle)).times(initialSpeed);
+            this.velocity.x *= Math.random() > 0.5 ? 1 : -1;
+        }
         this.inPlay = true;
     }
 
-    reset() {
-        // Change the position of the ball to the center
+    reset(velocity) {
         this.position = new Vec(canvasWidth / 2, canvasHeight / 2);
-        this.velocity = new Vec(0,0);
+        this.savedVelocity = this.velocity;
+        this.velocity = new Vec(0, 0);
         this.inPlay = false;
     }
 }
@@ -65,10 +69,15 @@ class Paddle extends GameObject {
     update(deltaTime) {
         this.position = this.position.plus(this.velocity.times(deltaTime));
         if (this.position.x < 0){
-            this.position. x = 0;
+            this.position.x = 0;
         } else if (this.position.x + this.width > canvasWidth){
             this.position.x = canvasWidth- this.width;
         }
+    }
+
+    reset() {
+        // Change the position of the paddle to the center
+        this.position = new Vec(canvasWidth / 2 - 55, canvasHeight - 60);
     }
 }
 
@@ -110,7 +119,7 @@ class Game {
         // Elements
         this.ball = new Ball(new Vec(canvasWidth / 2, canvasHeight / 2), 20, 20, "white");
         this.paddle = new Paddle(new Vec(canvasWidth / 2 - 55, canvasHeight - 60), 110, 30, "black");
-        this.blockManager = new BlockManager(6, 10, 75, 20, ["red", "orange", "yellow", "green", "blue", "purple"]);
+        this.blocks = new BlockManager(6, 10, 75, 20, ["red", "orange", "yellow", "green", "blue", "purple"]);
 
         // Borders
         this.topBorder = new GameObject(new Vec(0,0), canvasWidth, 40, "black", "barrier");
@@ -119,47 +128,88 @@ class Game {
         this.leftBorder = new GameObject(new Vec(0,0), 10, canvasWidth, "#87ceeb", "barrier");
         this.rightBorder = new GameObject(new Vec(canvasWidth - 10, 0), 10, canvasHeight, "#87ceeb", "barrier");
         
-        // Score text
-        this.score = new TextLabel(new Vec(5, 40), "30px Arial", "white");
+        // Initialize text
+        this.score = new TextLabel(new Vec(120, 26), "20px Arial", "white");
+        this.live = new TextLabel(new Vec(600, 26), "20px Arial", "white");
+        this.over = new TextLabel(new Vec(canvasWidth / 3, canvasHeight / 2 + 40), "30px Arial", "white");
+        this.win = new TextLabel(new Vec(canvasWidth / 2 - 83, canvasHeight / 2 + 40), "30px Arial", "white");
 
-        // Initialize points
+
+        // Initialize points and lifes
         this.points = 0;
+        this.lives = 3;
+        this.lastSpeedUp = 0;
 
         this.createEventListeners();
     }
 
     update(deltaTime) {
+        if (this.lives <= 0) return; // Finish the game if no lives left
+
         this.paddle.update(deltaTime);
         this.ball.update(deltaTime); 
 
-        if (boxOverlap(this.ball, this.paddle)) {
+         // Ball touches borders
+         if (boxOverlap(this.ball, this.leftBorder) || 
+            boxOverlap(this.ball, this.rightBorder)) {
             this.ball.velocity.x *= -1;
         }
-        if (boxOverlap(this.ball, this.leftBorder) || boxOverlap(this.ball, this.rightBorder)) {
-            this.ball.velocity.x *= -1;
+
+        // Ball excedes bottom border
+        if (boxOverlap(this.ball, this.bottomBorder)) {
+            this.lives -= 1;
+            this.ball.reset();
+            this.paddle.reset();
         }
-        if (boxOverlap(this.ball, this.topBorder)) {
+
+        // Ball touches paddle
+        if (boxOverlap(this.ball, this.paddle) ||
+            boxOverlap(this.ball, this.topBorder)) {
             this.ball.velocity.y *= -1;
         }
-        if (boxOverlap(this.ball, this.bottomBorder)) {
-            this.points -= 1;
-            this.ball.reset();
-            console.log(`Score ${this.points}`);
-        }
+
+        // Update blocks
+        this.blocks.blocks = this.blocks.blocks.filter(block => {
+            if (boxOverlap(this.ball, block)) {
+                this.points += 1;
+                this.ball.velocity.y *= -1;
+
+                // Increment velocity for each 10 blocks destroyed
+                if (this.points % 10 === 0 && this.points !== this.lastSpeedUp) {
+                    this.ball.velocity = this.ball.velocity.times(1.2);
+                    this.lastSpeedUp = this.points;
+                }
+
+                return false; // Delete block
+            }
+            return true; // Mantain block
+        })
     }
 
     draw(ctx) {
         // Draw objects on the canvas
-        this.score.draw(ctx, `${this.points}`);
-    
         this.leftBorder.draw(ctx);
         this.rightBorder.draw(ctx);
         this.topBorder.draw(ctx);
         this.bottomBorder.draw(ctx);
 
-        this.blockManager.draw(ctx);
+        this.score.draw(ctx, `Blocks: ${this.points} / 60`);
+        this.live.draw(ctx, `Lives: ${this.lives}`);
+
+        this.blocks.draw(ctx);
         this.paddle.draw(ctx);
-        this.ball.draw(ctx);
+
+        if (this.lives > 0 || this.points == 60) {
+            this.ball.draw(ctx);
+        }
+
+        if (this.lives <= 0){
+            this.over.draw(ctx, 'G A M E   O V E R');
+        }
+
+        if (this.points == 60){
+            this.win.draw(ctx, 'W I N N E R !');
+        }
     }
 
     createEventListeners() {

@@ -39,11 +39,6 @@ class GameObject {
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
         
     }
-
-    update(deltaTime) {
-        
-    }
-    
 }
 
 function boxOverlap(rect1, rect2) {

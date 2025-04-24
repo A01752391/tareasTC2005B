@@ -234,10 +234,10 @@ class Game {
         this.coins.coins = this.coins.coins.filter(coin => {
             if (boxOverlap(this.player, coin)) {
                 this.points += 1;
-                return false; // elimina la moneda
+                return false; // Delete coin
             }
-            return true; // mantiene la moneda
-        });
+            return true; // Mantain coin
+        })
     
         this.actors = [...this.coins.coins];
 
