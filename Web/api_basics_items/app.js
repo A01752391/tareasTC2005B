@@ -1,7 +1,6 @@
 "use strict";
 
 import express from "express";
-import fs from 'fs'
 
 const port = 7500;
 
@@ -11,20 +10,25 @@ app.use(express.json())
 
 app.use(express.static('./public'))
 
-app.get('/', (req, res) => {
-    fs.readFile('./public/html/helloServer.html', 'utf8',
-        (err, html) => {
-            if (err) {
-                res.status(500).send('There was an error: '
-                    + err)            
-                return
-            }
-            console.log("Sending page...")
-            res.send(html)
-            console.log("Page sent!")
-        })
-})
+let catalog = [];
+app.post('/newitems', (req, res) => {
+    const newItems = Array.isArray(req.body) ? req.body : [req.body];
+    const addedItems = [];
 
-app.listen(port, ()=>{
-    console.log(`Servidor en http://localhost:${port}`)
-})
+    for (const item of newItems) {
+        const { id, name, type, effect } = item;
+
+        if (!id || !name || !type || !effect) {
+            return res.status(400).json({ message: 'Faltan atributos en algún item' });
+        }
+
+        if (catalog.find(i => i.id === id)) {
+            return res.status(409).json({ message: `El item con ID ${id} ya existe` });
+        }
+
+        catalog.push(item);
+        addedItems.push(item);
+    }
+
+    res.status(201).json({ message: 'Items agregados', items: addedItems });
+});
