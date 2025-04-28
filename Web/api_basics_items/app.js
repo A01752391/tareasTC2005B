@@ -11,7 +11,7 @@ app.use(express.json())
 app.use(express.static('./public'))
 
 let catalog = [];
-app.post('/newitems', (req, res) => {
+app.post('/newItems', (req, res) => {
     const newItems = Array.isArray(req.body) ? req.body : [req.body];
     const addedItems = [];
 
@@ -32,3 +32,8 @@ app.post('/newitems', (req, res) => {
 
     res.status(201).json({ message: 'Items agregados', items: addedItems });
 });
+
+
+app.listen(port, ()=>{
+    console.log(`Servidor en http://localhost:${port}`)
+})
