@@ -12,13 +12,13 @@ app.use(express.json())
 app.use(express.static('./public'))
 
 
-let catalog = [
-    { id: 1, name: "Sword", type: "Weapon", effect: "Deals damage" },
-    { id: 2, name: "Shield", type: "Defense", effect: "Blocks attacks" }
-];
+let catalog = [];
 
 app.get('/items', (req, res) => {
-    res.json(catalog);
+    if (catalog.length === 0) {
+        return res.status(200).json({ message: 'No hay items disponibles' });
+    }
+    res.json(catalog); 
 });
 
 app.get('/obtainItems', (req, res) => {
