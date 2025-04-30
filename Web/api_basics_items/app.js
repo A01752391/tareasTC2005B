@@ -21,13 +21,15 @@ let users = [
     { "id": 2, "username": "user2", "items": [2] }
 ];
 
+// Add items
 app.get('/items', (req, res) => {
     if (catalog.length === 0) {
-        return res.status(200).json({ message: 'No hay items disponibles' });
+        return res.status(200).json({ message: 'No item registered' });
     }
     res.json(catalog); 
 });
 
+// Obtain items
 app.get('/obtainItems', (req, res) => {
     fs.readFile('./public/html/helloServer.html', 'utf8', (err, html) => {
         if (err) {
@@ -38,6 +40,7 @@ app.get('/obtainItems', (req, res) => {
     });
 });
 
+// New Items
 app.post('/newItems', (req, res) => {
     const newItems = Array.isArray(req.body) ? req.body : [req.body];
     const addedItems = [];
@@ -46,21 +49,21 @@ app.post('/newItems', (req, res) => {
         const { id, name, type, effect } = item;
 
         if (!id || !name || !type || !effect) {
-            return res.status(400).json({ message: 'Faltan atributos en algún item' });
+            return res.status(400).json({ message: 'Missing fields to add items' });
         }
 
         if (catalog.find(i => i.id === id)) {
-            return res.status(409).json({ message: `El item con ID ${id} ya existe` });
+            return res.status(409).json({ message: `Item with ID ${id} already exists` });
         }
 
         catalog.push(item);
         addedItems.push(item);
     }
 
-    res.status(201).json({ message: 'Items agregados', items: addedItems });
+    res.status(201).json({ message: 'Items added', items: addedItems });
 });
 
-
+// Get item by ID
 app.get('/items/:id', (req, res) => {
     const { id } = req.params; 
     const item = catalog.find(item => item.id === parseInt(id));
@@ -72,6 +75,7 @@ app.get('/items/:id', (req, res) => {
     res.json(item);
 });
 
+// Delete item by ID
 app.delete('/items/delete/:id', (req, res) => {
     const { id } = req.params;
     const index = catalog.findIndex(item => item.id === parseInt(id));
@@ -84,6 +88,7 @@ app.delete('/items/delete/:id', (req, res) => {
     res.status(200).json({ message: `Item with ID ${id} was deleted`, item: deletedItem[0] });
 });
 
+// Update item by ID
 app.patch('/items/update/:id', (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -102,17 +107,20 @@ app.patch('/items/update/:id', (req, res) => {
     res.status(200).json({ message: `Item with ID ${id} was updated`, item });
 });
 
+// Add user
 app.post('/users/register', (req, res) => {
     const newUser = req.body;
 
-    const requiredFields = ['id', 'username', 'items']; 
+    const requiredFields = ['id', 'username', 'email', 'items']; 
     for (const field of requiredFields) {
         if (!newUser.hasOwnProperty(field)) {
             return res.status(400).json({ message: `Missing field: ${field}` });
         }
     }
 
-    const existingUser = users.find(u => u.id === newUser.id || u.username === newUser.username);
+    const existingUser = users.find(u => 
+        u.id === newUser.id || u.username === newUser.username || u.email === newUser.email
+    );
     if (existingUser) {
         return res.status(400).json({ message: 'User already exists' });
     }
@@ -129,6 +137,7 @@ app.post('/users/register', (req, res) => {
     res.status(201).json({ message: 'User registered successfully', user: newUser });
 });
 
+// Obtain users
 app.get('/users', (req, res) => {
     if (users.length === 0) {
         return res.status(200).json({ message: 'No users registered' });
@@ -138,6 +147,7 @@ app.get('/users', (req, res) => {
         let userWithItemsDetails = {
             id: user.id,
             username: user.username,
+            email: user.email,
             items: []
         };
 
@@ -154,6 +164,7 @@ app.get('/users', (req, res) => {
     res.status(200).json(usersWithItems);
 });
 
+// Obtain users by ID
 app.get('/users/:id', (req, res) => {
     const { id } = req.params;
     const user = users.find(u => u.id === parseInt(id));
@@ -165,6 +176,7 @@ app.get('/users/:id', (req, res) => {
     const userWithItems = {
         id: user.id,
         username: user.username,
+        email: user.email,
         items: user.items
             .map(itemId => catalog.find(item => item.id === itemId))
             .filter(item => item) 
@@ -173,10 +185,7 @@ app.get('/users/:id', (req, res) => {
     res.status(200).json(userWithItems);
 });
 
-app.listen(port, () => {
-    console.log(`Servidor en http://localhost:${port}`);
-});
-
+// Delete users by ID
 app.delete('/users/delete/:id', (req, res) => {
     const { id } = req.params;
     const index = users.findIndex(u => u.id === parseInt(id));
@@ -193,6 +202,7 @@ app.delete('/users/delete/:id', (req, res) => {
     })
 });
 
+// Update user by ID
 app.patch('/users/update/:id', (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -204,10 +214,17 @@ app.patch('/users/update/:id', (req, res) => {
     }
 
     if (updates.username !== undefined) user.username = updates.username;
+    if (updates.email !== undefined) user.email = updates.email;
+
     if (updates.items !== undefined) user.items = updates.items;
 
     res.status(200).json({
         message: `User with ID ${id} was updated`,
         user
     });
+});
+
+// Server on
+app.listen(port, () => {
+    console.log(`Servidor en http://localhost:${port}`);
 });
