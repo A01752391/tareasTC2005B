@@ -192,3 +192,22 @@ app.delete('/users/delete/:id', (req, res) => {
         user: deletedUser
     })
 });
+
+app.patch('/users/update/:id', (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const user = users.find(u => u.id === parseInt(id));
+
+    if (!user) {
+        return res.status(404).json({ message: `User with ID ${id} was not found` });
+    }
+
+    if (updates.username !== undefined) user.username = updates.username;
+    if (updates.items !== undefined) user.items = updates.items;
+
+    res.status(200).json({
+        message: `User with ID ${id} was updated`,
+        user
+    });
+});
