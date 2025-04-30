@@ -11,7 +11,10 @@ app.use(express.json())
 
 app.use(express.static('./public'))
 
-let catalog = [];
+let catalog = [
+    { "id": 1, "name": "Sword", "type": "Weapon", "effect": "Deals damage" },
+    { "id": 2, "name": "Shield", "type": "Defense", "effect": "Blocks attacks" }
+];
 
 app.get('/items', (req, res) => {
     if (catalog.length === 0) {
@@ -50,6 +53,18 @@ app.post('/newItems', (req, res) => {
     }
 
     res.status(201).json({ message: 'Items agregados', items: addedItems });
+});
+
+
+app.get('/items/:id', (req, res) => {
+    const { id } = req.params; 
+    const item = catalog.find(item => item.id === parseInt(id));
+
+    if (!item) {
+        return res.status(200).json({ message: `Item with ID ${id} was not found` });
+    }
+
+    res.json(item);
 });
 
 app.listen(port, ()=>{
