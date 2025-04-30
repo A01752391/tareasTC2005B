@@ -32,6 +32,25 @@ app.get('/users/:id', (req, res) => {
     const userWithItems = {
         id: user.id,
         username: user.username,
+        app.get('/users/:id', (req, res) => {
+    const { id } = req.params;
+    const user = users.find(u => u.id === parseInt(id));
+
+    if (!user) {
+        return res.status(404).json({ message: `User with ID ${id} was not found` });
+    }
+
+    const userWithItems = {
+        id: user.id,
+        username: user.username,
+        items: user.items
+            .map(itemId => catalog.find(item => item.id === itemId))
+            .filter(item => item) 
+    };
+
+    res.status(200).json(userWithItems);
+});
+
         items: user.items
             .map(itemId => catalog.find(item => item.id === itemId))
             .filter(item => item) 
