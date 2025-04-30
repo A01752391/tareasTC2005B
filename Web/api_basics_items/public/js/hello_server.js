@@ -85,3 +85,12 @@ async function addUser(userData) {
 }
 
 addUser();
+
+async function obtainUser() {
+    const response = await fetch('http://localhost:7500/users');
+    const data = await response.json();
+
+    console.log(data);
+}
+
+obtainUser();

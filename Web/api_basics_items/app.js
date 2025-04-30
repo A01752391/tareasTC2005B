@@ -124,6 +124,32 @@ app.post('/users/register', (req, res) => {
     res.status(201).json({ message: 'User registered successfully', user: newUser });
 });
 
+app.get('/users', (req, res) => {
+    if (users.length === 0) {
+        return res.status(200).json({ message: 'No users registered' });
+    }
+
+    const usersWithItems = users.map(user => {
+        let userWithItemsDetails = {
+            id: user.id,
+            username: user.username,
+            items: []
+        };
+
+        user.items.forEach(itemId => {
+            const item = catalog.find(catalogItem => catalogItem.id === itemId);
+            if (item) {
+                userWithItemsDetails.items.push(item);
+            }
+        });
+
+        return userWithItemsDetails;
+    });
+
+    res.status(200).json(usersWithItems);
+});
+
+
 app.listen(port, () => {
     console.log(`Servidor en http://localhost:${port}`);
 });
