@@ -67,6 +67,18 @@ app.get('/items/:id', (req, res) => {
     res.json(item);
 });
 
-app.listen(port, ()=>{
-    console.log(`Servidor en http://localhost:${port}`)
-})
+app.delete('/items/delete/:id', (req, res) => {
+    const { id } = req.params;
+    const index = catalog.findIndex(item => item.id === parseInt(id));
+
+    if (index === -1) {
+        return res.status(200).json({ message: `Item with ID ${id} was not found` });
+    }
+
+    const deletedItem = catalog.splice(index, 1);
+    res.status(200).json({ message: `Item with ID ${id} was deleted`, item: deletedItem[0] });
+});
+
+app.listen(port, () => {
+    console.log(`Servidor en http://localhost:${port}`);
+});
