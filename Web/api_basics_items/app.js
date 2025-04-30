@@ -176,3 +176,19 @@ app.get('/users/:id', (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor en http://localhost:${port}`);
 });
+
+app.delete('/users/delete/:id', (req, res) => {
+    const { id } = req.params;
+    const index = users.findIndex(u => u.id === parseInt(id));
+
+    if (index === -1) {
+        return res.status(404).json({ message: `User with ID ${id} was not found` });
+    }
+
+    const deletedUser = users.splice(index, 1)[0];
+
+    res.status(200).json({
+        message: `User with ID ${id} was deleted`,
+        user: deletedUser
+    })
+});
