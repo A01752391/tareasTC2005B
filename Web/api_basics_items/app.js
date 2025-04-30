@@ -20,14 +20,16 @@ let users = [];
 app.post('/users/register', (req, res) => {
     const newUser = req.body;
 
-    const requiredFields = ['id', 'username', 'items']; 
+    const requiredFields = ['id', 'username', 'email', 'items']; 
     for (const field of requiredFields) {
         if (!newUser.hasOwnProperty(field)) {
             return res.status(400).json({ message: `Missing field: ${field}` });
         }
     }
 
-    const existingUser = users.find(u => u.id === newUser.id || u.username === newUser.username);
+    const existingUser = users.find(u => 
+        u.id === newUser.id || u.username === newUser.username || u.email === newUser.email
+    );
     if (existingUser) {
         return res.status(400).json({ message: 'User already exists' });
     }
