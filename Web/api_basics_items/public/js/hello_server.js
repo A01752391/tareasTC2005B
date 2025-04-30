@@ -4,7 +4,7 @@ async function loadPage (){
 
 }
 
-loadPage()
+loadPage();
 
 async function newItems (){
 
@@ -24,4 +24,22 @@ async function newItems (){
     console.log(response_r)
 }
 
-newItems()
+newItems();
+
+async function obtainItems() {
+    const response = await fetch('http://localhost:7500/items', {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.log(errorData.message); 
+        return;
+    }
+
+    const items = await response.json();
+    console.log(items); 
+}
+
+obtainItems();
