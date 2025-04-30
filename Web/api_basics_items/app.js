@@ -32,6 +32,8 @@ app.patch('/users/update/:id', (req, res) => {
     }
 
     if (updates.username !== undefined) user.username = updates.username;
+    if (updates.email !== undefined) user.email = updates.email;
+    
     if (updates.items !== undefined) user.items = updates.items;
 
     res.status(200).json({
