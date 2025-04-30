@@ -17,9 +17,24 @@ let catalog = [
 ];
 
 let users = [
-    { "id": 1, "username": "user1", "items": [1] },
-    { "id": 2, "username": "user2", "items": [2] }
+    { "id": 1, "username": "user1", "email": "prueba1@gmail.com", "items": [1] },
+    { "id": 2, "username": "user2", "email": "prueba2@gmail.com", "items": [2] }
 ];
+
+// Page loaded
+app.get('/', (req, res) => {
+    fs.readFile('./public/html/helloServer.html', 'utf8',
+        (err, html) => {
+            if (err) {
+                res.status(500).send('There was an error: '
+                    + err)            
+                return
+            }
+            console.log("Sending page...")
+            res.send(html)
+            console.log("Page sent!")
+        })
+});
 
 // Add items
 app.get('/items', (req, res) => {

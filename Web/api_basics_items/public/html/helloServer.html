@@ -4,13 +4,194 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../js/hello_server.js"></script>
+    <link rel="stylesheet" href="../css/helloServer.css" />
     <title>API</title>
 </head>
 <body>
     <header>
         <h1>Bienvenido al tester de API's</h1>
-        <p>Usa los siguientes endpoints para interactuar con el servidor.</p>
-
+        <a href="../../../../index.html">Regresar al índice</a>
     </header>
+
+    <main>
+        <!-- Documentación -->
+        <section id="endpoints">
+            <h2>Endpoints disponibles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Método</th>
+                        <th>Endpoint</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo de salida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Load Page -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/</td>
+                        <td>Llama a la página HTML (carga el archivo "helloServer.html")</td>
+                        <td><code>Sending page...<br>Page sent!</code></td>
+                    </tr>
+
+                    <!-- New Items -->
+                    <tr>
+                        <td>POST</td>
+                        <td>/newItems</td>
+                        <td>Agrega uno o más items al catálogo.</td>
+                        <td><code>{
+                            "message": "Items agregados",
+                            "itemsAdded": 1
+                            }</code></td>
+                    </tr>
+
+                    <!-- Obtain Items -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/items</td>
+                        <td>Obtiene todos los items disponibles.</td>
+                        <td><code>[
+                            { "id": 1, "name": "Sword", "type": "Weapon", "effect": "Deals damage" },
+                            { "id": 2, "name": "Shield", "type": "Defense", "effect": "Blocks attacks" }
+                            ]</code></td>
+                    </tr>
+
+                
+                    <!-- Obtain Item by ID -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/items/1</td>
+                        <td>Obtiene un item por su ID.</td>
+                        <td><code>{
+                            "id": 1,
+                            "name": "Sword",
+                            "type": "Weapon",
+                            "effect": "Deals damage"
+                            }</code></td>
+                    </tr>
+                
+                    <!-- Update Item -->
+                    <tr>
+                        <td>PATCH</td>
+                        <td>/items/update/1</td>
+                        <td>Actualiza los datos de un item por ID.</td>
+                        <td><code>{
+                            "message": "Item with ID 1 was updated",
+                            "item": {
+                                "id": 1,
+                                "name": "Sword of Fire",
+                                "type": "Weapon",
+                                "effect": "Deals fire damage"
+                            }
+                            }</code></td>
+                    </tr>
+                
+                    <!-- Delete Item -->
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/items/delete/1</td>
+                        <td>Elimina un item por ID.</td>
+                        <td><code>{
+                            "message": "Item with ID 1 was deleted",
+                            "id": 1
+                            }</code></td>
+                    </tr>
+
+                    <!-- Add User -->
+                    <tr>
+                        <td>POST</td>
+                        <td>/users/register</td>
+                        <td>Registra un nuevo usuario.</td>
+                        <td><code>{
+                            "message": "Usuario registrado exitosamente",
+                            "user": {
+                            "id": 1,
+                            "username": "user1",
+                            "email": "prueba1@gmail.com",
+                            "items": [1]
+                            }
+                            }</code></td>
+                    </tr>
+                
+                    <!-- Obtain Users -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/users</td>
+                        <td>Obtiene todos los usuarios registrados.</td>
+                        <td><code>[
+                            { "id": 1, "username": "user1", "email": "prueba1@gmail.com", "items": [1] },
+                            { "id": 2, "username": "user2", "email": "prueba2@gmail.com", "items": [2] }
+                            ]</code></td>
+                    </tr>
+                
+                    <!-- Obtain User by ID -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/users/1</td>
+                        <td>Obtiene un usuario por ID con sus items.</td>
+                        <td><code>{
+                            "id": 1,
+                            "username": "user1",
+                            "email": "prueba1@gmail.com",
+                            "items": [
+                                { "id": 1, "name": "Sword" }
+                            ]
+                            }</code></td>
+                    </tr>
+                
+                    <!-- Update User -->
+                    <tr>
+                        <td>PATCH</td>
+                        <td>/users/update/1</td>
+                        <td>Actualiza información del usuario.</td>
+                        <td><code>{
+                            "message": "Usuario actualizado",
+                            "user": {
+                                "id": 1,
+                                "username": "user1_updated",
+                                "email": "updated_email@example.com",
+                                "items": [1, 2]
+                            }
+                            }</code></td>
+                    </tr>
+                
+                    <!-- Delete User -->
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/users/delete/1</td>
+                        <td>Elimina un usuario por ID.</td>
+                        <td><code>{
+                            "message": "Usuario eliminado",
+                            "user": {
+                                "id": 1,
+                                "username": "user1"
+                            }
+                            }</code></td>
+                    </tr>
+                </tbody>                
+            </table>
+
+        </section>
+    
+        <!-- Instrucciones de Uso -->
+        <section>
+            <h2>Instrucciones de Uso de la API</h2>
+            <p>Para utilizar esta API, sigue las instrucciones que se detallan a continuación:</p>
+            <ul>
+                <li>Base URL: La URL base de la API es <code>http://localhost:7500</code></li>
+                <li>Formato de las solicitudes: Las solicitudes deben enviarse en formato JSON.</li>
+                <li>Realizando Peticiones: Puedes interactuar con la API utilizando métodos HTTP estándar: 
+                    <ul>
+                        <li>GET para obtener datos.</li>
+                        <li>POST para crear nuevos registros.</li>
+                        <li>PATCH para actualizar registros existentes.</li>
+                        <li>DELETE para eliminar registros.</li>
+                    </ul>
+                </li>
+         
+            <p>Es importante utilizar los códigos de estado HTTP, pues estos indican si el funcionamiento del código es correcto. Los códigos de error comunes incluyen 400 (Bad Request), 404 (Not Found) y 500 (Internal Server Error).</p>
+        </section>
+      </main>
 </body>
 </html>
