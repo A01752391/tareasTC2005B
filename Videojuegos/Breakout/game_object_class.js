@@ -18,6 +18,7 @@ let oldTime;
 const paddleVelocity = 0.8;
 const speedIncrease = 1.05;
 const initialSpeed = 0.2;
+let animationDelay = 200;
 
 // Context of the Canvas
 let ctx;
@@ -111,6 +112,39 @@ class BlockManager {
 
 }
 
+// Class for each coin
+class Coin extends AnimatedObject {
+    constructor(position, width, height, color, sheetCols) {
+        super(position, width, height, color, "coins", sheetCols);
+        this.setAnimation(0, 7, true, animationDelay);
+    }
+
+    update(deltaTime) {
+        this.updateFrame(deltaTime);
+    }
+}
+
+class CoinsManager {
+    constructor(quantity) {
+        this.coins = [];
+        
+        const minY = 100;
+        const maxY = canvasHeight - 150;
+        
+        for (let i = 0; i < quantity; i++) {
+            let x = Math.random() * (canvasWidth - 50);
+            let y = minY + Math.random() * (maxY - minY);
+            
+            const coin = new Coin(new Vec(x, y), 50, 50, colorBlue, 8);
+            coin.setSprite('assets/coin_gold.png', new Rect(0, 0, 32, 32));
+            this.coins.push(coin);
+        }
+    }
+
+    draw(ctx) {
+        this.coins.forEach(coin => coin.draw(ctx));
+    }
+}
 
 // Class that controls all the objects in the game
 class Game {
@@ -120,6 +154,9 @@ class Game {
         this.ball = new Ball(new Vec(canvasWidth / 2, canvasHeight / 2), 20, 20, "white");
         this.paddle = new Paddle(new Vec(canvasWidth / 2 - 55, canvasHeight - 60), 110, 30, "black");
         this.blocks = new BlockManager(6, 10, 75, 20, ["red", "orange", "yellow", "green", "blue", "purple"]);
+
+        this.coins = new CoinsManager(3);
+        this.actors = [...this.coins.coins];
 
         // Borders
         this.topBorder = new GameObject(new Vec(0,0), canvasWidth, 40, "black", "barrier");
@@ -134,7 +171,6 @@ class Game {
         this.over = new TextLabel(new Vec(canvasWidth / 3, canvasHeight / 2 + 40), "30px Arial", "white");
         this.win = new TextLabel(new Vec(canvasWidth / 2 - 83, canvasHeight / 2 + 40), "30px Arial", "white");
 
-
         // Initialize points and lifes
         this.points = 0;
         this.lives = 3;
@@ -148,6 +184,10 @@ class Game {
 
         this.paddle.update(deltaTime);
         this.ball.update(deltaTime); 
+
+        for (let actor of this.actors) {
+            actor.update(deltaTime);
+        }
 
          // Ball touches borders
          if (boxOverlap(this.ball, this.leftBorder) || 
@@ -167,6 +207,19 @@ class Game {
             boxOverlap(this.ball, this.topBorder)) {
             this.ball.velocity.y *= -1;
         }
+
+        // Update coins
+        this.coins.coins = this.coins.coins.filter(coin => {
+            if (boxOverlap(this.ball, coin)) {
+                this.lives += 1;
+                //this.ball.velocity = this.ball.velocity.times(1.2);
+                //this.lastSpeedUp = this.points;
+                return false; // Coin collected: remove it
+            }
+            return true; // Keep coin
+        });
+
+        this.actors = [...this.coins.coins];
 
         // Update blocks
         this.blocks.blocks = this.blocks.blocks.filter(block => {
@@ -198,6 +251,10 @@ class Game {
 
         this.blocks.draw(ctx);
         this.paddle.draw(ctx);
+        
+        for (let actor of this.actors) {
+            actor.draw(ctx);
+        }
 
         if (this.lives > 0 || this.points == 60) {
             this.ball.draw(ctx);
