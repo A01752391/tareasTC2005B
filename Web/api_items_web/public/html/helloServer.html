@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/helloServer.css">
+    <script type="module" src="../js/hello_server.js"></script>
+    <title>API</title>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido al tester de API's</h1>
+        <a href="../../../../index.html">Regresar al índice</a>
+    </header>
+
+    <main>
+        <!-- Documentación -->
+        <section id="endpoints">
+            <h2>Endpoints disponibles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Método</th>
+                        <th>Endpoint</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Load Page -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/</td>
+                        <td>Llama a la página HTML (carga el archivo "helloServer.html")</td>
+                    </tr>
+
+                    <!-- New Items -->
+                    <tr>
+                        <td>POST</td>
+                        <td>/newItems</td>
+                        <td>Agrega uno o más items al catálogo.</td>
+                    </tr>
+
+                    <!-- Obtain Items -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/items</td>
+                        <td>Obtiene todos los items disponibles.</td>
+                    </tr>
+
+                
+                    <!-- Obtain Item by ID -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/items/1</td>
+                        <td>Obtiene un item por su ID.</td>
+                    </tr>
+                
+                    <!-- Update Item -->
+                    <tr>
+                        <td>PATCH</td>
+                        <td>/items/update/1</td>
+                        <td>Actualiza los datos de un item por ID.</td>
+                    </tr>
+                
+                    <!-- Delete Item -->
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/items/delete/1</td>
+                        <td>Elimina un item por ID.</td>
+                    </tr>
+
+                    <!-- Add User -->
+                    <tr>
+                        <td>POST</td>
+                        <td>/users/register</td>
+                        <td>Registra un nuevo usuario.</td>
+                    </tr>
+                
+                    <!-- Obtain Users -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/users</td>
+                        <td>Obtiene todos los usuarios registrados.</td>
+                    </tr>
+                
+                    <!-- Obtain User by ID -->
+                    <tr>
+                        <td>GET</td>
+                        <td>/users/1</td>
+                        <td>Obtiene un usuario por ID con sus items.</td>
+                    </tr>
+                
+                    <!-- Update User -->
+                    <tr>
+                        <td>PATCH</td>
+                        <td>/users/update/1</td>
+                        <td>Actualiza información del usuario.</td>
+                    </tr>
+                
+                    <!-- Delete User -->
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/users/delete/1</td>
+                        <td>Elimina un usuario por ID.</td>
+                    </tr>
+                </tbody>                
+            </table>
+
+        </section>
+    
+        <!-- API en uso -->
+        <section>
+            <h2>Poniendo a prueba nuestro API</h2>
+            <p>Da click en los botones para ver su efecto:</p>
+            
+            <h3>Users</h3>
+                <button id="paginaCreada" type="button">Crear página</button>
+                <ul id="userList"></ul>
+
+            <h3>Items</h3>
+                <button id="newItem" type="button">New Items</button>
+                <ul id="itemList"></ul>
+                <button id="obtainItems" type="button">Obtain Items</button>
+                <ul id="itemList"></ul>
+                <button id="obtainItemsID" type="button">Obtain Items ID</button>
+                <ul id="itemList"></ul>
+        </section>
+
+        <!-- Resultados del API en uso -->
+        <section id="resultados">
+            <h2>Resultados</h2>
+            <div id="api_result" class="result-box"></div>
+        </section>
+      </main>
+</body>
+</html>
