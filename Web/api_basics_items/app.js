@@ -4,12 +4,9 @@ import express from "express";
 import fs from 'fs';
 
 const port = 7500;
-
-const app = express()
-
-app.use(express.json())
-
-app.use(express.static('./public'))
+const app = express();
+app.use(express.json());
+app.use(express.static('./public'));
 
 let catalog = [
     { "id": 1, "name": "Sword", "type": "Weapon", "effect": "Deals damage" },
@@ -21,41 +18,28 @@ let users = [
     { "id": 2, "username": "user2", "email": "prueba2@gmail.com", "items": [2] }
 ];
 
-// Page loaded
+// Cargar página
 app.get('/', (req, res) => {
-    fs.readFile('./public/html/helloServer.html', 'utf8',
-        (err, html) => {
-            if (err) {
-                res.status(500).send('There was an error: '
-                    + err)            
-                return
-            }
-            console.log("Sending page...")
-            res.send(html)
-            console.log("Page sent!")
-        })
-});
-
-// Add items
-app.get('/items', (req, res) => {
-    if (catalog.length === 0) {
-        return res.status(200).json({ message: 'No item registered' });
-    }
-    res.json(catalog); 
-});
-
-// Obtain items
-app.get('/obtainItems', (req, res) => {
     fs.readFile('./public/html/helloServer.html', 'utf8', (err, html) => {
         if (err) {
-            return res.status(500).send('There was an error reading the HTML: ' + err);
+            res.status(500).send('There was an error: ' + err);
+            return;
         }
-
+        console.log("Sending page...");
         res.send(html);
+        console.log("Page sent!");
     });
 });
 
-// New Items
+// Obtener todos los items
+app.get('/items', (req, res) => {
+    if (catalog.length === 0) {
+        return res.status(404).json({ message: 'No items registered' });
+    }
+    res.json(catalog);
+});
+
+// Agregar items
 app.post('/newItems', (req, res) => {
     const newItems = Array.isArray(req.body) ? req.body : [req.body];
     const addedItems = [];
@@ -64,7 +48,7 @@ app.post('/newItems', (req, res) => {
         const { id, name, type, effect } = item;
 
         if (!id || !name || !type || !effect) {
-            return res.status(400).json({ message: 'Missing fields to add items' });
+            return res.status(400).json({ message: 'Missing required fields: id, name, type, effect' });
         }
 
         if (catalog.find(i => i.id === id)) {
@@ -75,61 +59,73 @@ app.post('/newItems', (req, res) => {
         addedItems.push(item);
     }
 
-    res.status(201).json({ message: 'Items added', items: addedItems });
+    res.status(201).json({ 
+        message: 'Items added successfully', 
+        itemsAdded: addedItems.length,
+        items: addedItems
+    });
 });
 
-// Get item by ID
+// Obtener items por ID
 app.get('/items/:id', (req, res) => {
-    const { id } = req.params; 
+    const { id } = req.params;
     const item = catalog.find(item => item.id === parseInt(id));
 
     if (!item) {
-        return res.status(200).json({ message: `Item with ID ${id} was not found` });
+        return res.status(404).json({ message: `Item with ID ${id} not found` });
     }
 
     res.json(item);
 });
 
-// Delete item by ID
+
+// Borrar items por ID
 app.delete('/items/delete/:id', (req, res) => {
     const { id } = req.params;
     const index = catalog.findIndex(item => item.id === parseInt(id));
 
     if (index === -1) {
-        return res.status(200).json({ message: `Item with ID ${id} was not found` });
+        return res.status(404).json({ message: `Item with ID ${id} not found` });
     }
 
     const deletedItem = catalog.splice(index, 1);
-    res.status(200).json({ message: `Item with ID ${id} was deleted`, item: deletedItem[0] });
+    res.json({ 
+        message: `Item with ID ${id} deleted successfully`,
+        item: deletedItem[0]
+    });
 });
 
-// Update item by ID
+// Modificación de items
 app.patch('/items/update/:id', (req, res) => {
     const { id } = req.params;
     const updates = req.body;
     const item = catalog.find(item => item.id === parseInt(id));
 
     if (!item) {
-        return res.status(200).json({ message: `Item with ID ${id} was not found` });
+        return res.status(404).json({ message: `Item with ID ${id} not found` });
     }
 
-    for (let key in updates) {
-        if (item.hasOwnProperty(key)) {
+    const validFields = ['name', 'type', 'effect'];
+    for (const key in updates) {
+        if (validFields.includes(key)) {
             item[key] = updates[key];
         }
     }
 
-    res.status(200).json({ message: `Item with ID ${id} was updated`, item });
+    res.json({ 
+        message: `Item with ID ${id} updated successfully`,
+        item
+    });
 });
 
-// Add user
+// Registro de usuarios
 app.post('/users/register', (req, res) => {
     const newUser = req.body;
 
-    const requiredFields = ['id', 'username', 'email', 'items']; 
+    const requiredFields = ['id', 'username', 'email', 'items'];
     for (const field of requiredFields) {
-        if (!newUser.hasOwnProperty(field)) {
-            return res.status(400).json({ message: `Missing field: ${field}` });
+        if (!newUser[field]) {
+            return res.status(400).json({ message: `Missing required field: ${field}` });
         }
     }
 
@@ -137,55 +133,51 @@ app.post('/users/register', (req, res) => {
         u.id === newUser.id || u.username === newUser.username || u.email === newUser.email
     );
     if (existingUser) {
-        return res.status(400).json({ message: 'User already exists' });
+        return res.status(409).json({ message: 'User already exists' });
     }
 
     const invalidItemIds = newUser.items.filter(itemId => 
-        !catalog.find(catalogItem => catalogItem.id === itemId)
+        !catalog.find(item => item.id === itemId)
     );
-
     if (invalidItemIds.length > 0) {
-        return res.status(400).json({ message: `Invalid item IDs: ${invalidItemIds.join(', ')}` });
+        return res.status(400).json({ 
+            message: `Invalid item IDs: ${invalidItemIds.join(', ')}`,
+            validItems: catalog.map(item => item.id)
+        });
     }
 
     users.push(newUser);
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
+    res.status(201).json({ 
+        message: 'User registered successfully',
+        user: newUser
+    });
 });
 
-// Obtain users
+// Obtener todos los usuarios
 app.get('/users', (req, res) => {
     if (users.length === 0) {
-        return res.status(200).json({ message: 'No users registered' });
+        return res.status(404).json({ message: 'No users registered' });
     }
 
-    const usersWithItems = users.map(user => {
-        let userWithItemsDetails = {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            items: []
-        };
+    const usersWithItems = users.map(user => ({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        items: user.items
+            .map(itemId => catalog.find(item => item.id === itemId))
+            .filter(item => item)
+    }));
 
-        user.items.forEach(itemId => {
-            const item = catalog.find(catalogItem => catalogItem.id === itemId);
-            if (item) {
-                userWithItemsDetails.items.push(item);
-            }
-        });
-
-        return userWithItemsDetails;
-    });
-
-    res.status(200).json(usersWithItems);
+    res.json(usersWithItems);
 });
 
-// Obtain users by ID
+// Obtener usuarios por ID
 app.get('/users/:id', (req, res) => {
     const { id } = req.params;
     const user = users.find(u => u.id === parseInt(id));
 
     if (!user) {
-        return res.status(404).json({ message: `User with ID ${id} was not found` });
+        return res.status(404).json({ message: `User with ID ${id} not found` });
     }
 
     const userWithItems = {
@@ -194,52 +186,61 @@ app.get('/users/:id', (req, res) => {
         email: user.email,
         items: user.items
             .map(itemId => catalog.find(item => item.id === itemId))
-            .filter(item => item) 
+            .filter(item => item)
     };
 
-    res.status(200).json(userWithItems);
+    res.json(userWithItems);
 });
 
-// Delete users by ID
+// Borrar usuarios por ID
 app.delete('/users/delete/:id', (req, res) => {
     const { id } = req.params;
     const index = users.findIndex(u => u.id === parseInt(id));
 
     if (index === -1) {
-        return res.status(404).json({ message: `User with ID ${id} was not found` });
+        return res.status(404).json({ message: `User with ID ${id} not found` });
     }
 
     const deletedUser = users.splice(index, 1)[0];
-
-    res.status(200).json({
-        message: `User with ID ${id} was deleted`,
+    res.json({
+        message: `User with ID ${id} deleted successfully`,
         user: deletedUser
-    })
+    });
 });
 
-// Update user by ID
+// Modificar usuarios por ID
 app.patch('/users/update/:id', (req, res) => {
     const { id } = req.params;
     const updates = req.body;
-
     const user = users.find(u => u.id === parseInt(id));
 
     if (!user) {
-        return res.status(404).json({ message: `User with ID ${id} was not found` });
+        return res.status(404).json({ message: `User with ID ${id} not found` });
     }
 
-    if (updates.username !== undefined) user.username = updates.username;
-    if (updates.email !== undefined) user.email = updates.email;
+    if (updates.username) user.username = updates.username;
+    if (updates.email) user.email = updates.email;
 
-    if (updates.items !== undefined) user.items = updates.items;
+    if (updates.items) {
+        const invalidItems = updates.items.filter(itemId => 
+            !catalog.find(item => item.id === itemId)
+        );
+        if (invalidItems.length > 0) {
+            return res.status(400).json({
+                message: `Invalid item IDs: ${invalidItems.join(', ')}`,
+                validItems: catalog.map(item => item.id)
+            });
+        }
+        user.items = updates.items;
+    }
 
-    res.status(200).json({
-        message: `User with ID ${id} was updated`,
+    res.json({
+        message: `User with ID ${id} updated successfully`,
         user
     });
 });
 
-// Server on
+// Inicializar el servidor
 app.listen(port, () => {
     console.log(`Servidor en http://localhost:${port}`);
 });
