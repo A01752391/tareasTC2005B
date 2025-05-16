@@ -159,8 +159,15 @@ async function obtainUsers() {
         showResult(`Usuarios:\n${usersList}`);
 
         console.log('Users:', data);
+
+        const usersDetails = users.map(user => 
+            `ID: ${user.id}, Nombre: ${user.nombre}, Email: ${user.email}, Items: ${user.items?.length || 0}`
+        ).join('\n\n');
+        
+        showResult(`Users:\n${usersDetails}`);
     } catch (error) {
         console.error('Error fetching users:', error);
+        showResult('Error fetching users: ' + error.message, true);
     }
 }
 
@@ -175,17 +182,19 @@ async function getUserID(id) {
 
         if (!response.ok) {
             console.error('Error:', result.message);
-            if (document.getElementById('errorMessage')) {
-                document.getElementById('errorMessage').innerText = result.message;
-            }
+            showResult(`Error: ${errorData.message}`, true);
             return;
         }
         
         console.log('User details:', result);
-        if (document.getElementById('userDetails')) {
-            document.getElementById('userDetails').innerText = 
-                `ID: ${result.id}, Nombre: ${result.username}, Items: ${result.items.map(i => i.name).join(", ")}`;
-        }
+         const itemsList = user.items?.map(item => 
+            `- ${item.name} (${item.type})`
+        ).join('\n') || 'No items';
+
+        const userDetails = `ID: ${user.id}, Nombre: ${user.nombre}, Email: ${user.email}\nItems:\n${itemsList}`;
+        
+        showResult(`User:\n${userDetails}`);
+        
     } catch (error) {
         console.error('Error fetching user:', error);
     }
