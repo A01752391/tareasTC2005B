@@ -7,7 +7,6 @@ async function showResult(message, isError = false) {
     } else {
         resultBox.style.color = 'black';
     }
-    console.log(isError ? 'Error:' : 'Success:', message);
 }
 
 async function loadPage(){
@@ -16,25 +15,29 @@ async function loadPage(){
 }
 
 async function newItem(){
-    const data = {
-        id: 1,
-        name: "Sword",
-        type: "Weapon",
-        effect: "Deals damage"
+    const itemData = {
+        id: document.getElementById('newItemID').value,
+        name: document.getElementById('itemName').value,
+        type: document.getElementById('itemType').value,
+        effect: document.getElementById('itemEffect').value
     };
 
+    if (!itemData.id || !itemData.name || !itemData.type || !itemData.effect) {
+        showResult('All fields are required', true);
+        return;
+    }
     try {
         const response = await fetch('http://localhost:7500/newItems', {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
+            body: JSON.stringify(itemData)
         });
         const result = await response.json();
-        console.log(result);
-        showResult('Item added');
+        console.log(result.message);
+        showResult(result.message);
     } catch (error) {
         console.error('Error adding item:', error);
-        showResult('Error adding item: ' + error.message, true);
+        showResult('Error adding item', true);
     }
 }
 
@@ -50,6 +53,7 @@ async function obtainItems() {
         if (!response.ok) {
             const errorData = await response.json();
             console.error('Error:', errorData.message);
+            showResult(errorData.message);
             return;
         }
 
@@ -64,12 +68,21 @@ async function obtainItems() {
 
     } catch (error) {
         console.error('Error fetching items:', error);
-        showResult('Error fetching items: ' + error.message, true);
+        showResult('Error fetching items', true);
     }
 }
 
-async function obtainItemsID(id) {
-    const response = await fetch(`http://localhost:7500/items/${id}`, {
+async function obtainItemsID() {
+    const itemData = {
+        id: document.getElementById('obtainID').value,
+    };
+
+    if (!itemData.id) {
+        obtainItems();
+        return;
+    }
+
+    const response = await fetch(`http://localhost:7500/items/${itemData.id}`, {
         method: "GET",
         headers: { 'Content-Type': 'application/json' }
     });
@@ -78,20 +91,28 @@ async function obtainItemsID(id) {
 
     if (!response.ok) {
         console.log(result.message);
-        showResult(`Error obtaining item: ${error.message}`, true);
+        showResult(result.message, true);
         return;
     }
     
     const itemDetails = `ID ${result.id}, Name: ${result.name}, Type: ${result.type}, Effect: ${result.effect}`;
         
-    showResult(`Item:\n${itemDetails}`);
+    showResult(`Items:\n${itemDetails}`);
 
     console.log(result);
 }
 
-async function deleteItem(id) {
+async function deleteItem() {
+    const itemData = {
+        id: document.getElementById('deleteitemID').value,
+    };
+
+    if (!itemData.id) {
+        showResult('ID is missing', true);
+        return;
+    }
     try {
-        const response = await fetch(`http://localhost:7500/items/delete/${id}`, {
+        const response = await fetch(`http://localhost:7500/items/delete/${itemData.id}`, {
             method: "DELETE",
             headers: { 'Content-Type': 'application/json' }
         });
@@ -99,14 +120,29 @@ async function deleteItem(id) {
         const result = await response.json();
         console.log(result.message);
         
-        showResult(`Items ${id} deleted`);
+        showResult(result.message);
     } catch (error) {
         console.error('Error deleting item:', error);
-        showResult(`Error deleting item: ${error.message}`, true);
+        showResult(result.message);
     }
 }
 
-async function updateItem(id, updates) {
+async function updateItem() {
+    const id = document.getElementById('updateitemID').value;
+    const name = document.getElementById('updateitemName').value;
+    const type = document.getElementById('updateitemType').value;
+    const effect = document.getElementById('updateitemEffect').value;
+
+    if (!id) {
+        showResult('ID is missing', true);
+        return;
+    }
+
+    const updates = {};
+    if (name) updates.name = name;
+    if (type) updates.type = type;
+    if (effect) updates.effect = effect;
+
     try {
         const response = await fetch(`http://localhost:7500/items/update/${id}`, {
             method: "PATCH",
@@ -118,16 +154,29 @@ async function updateItem(id, updates) {
         console.log(result.message);
         console.log(result.item);
 
-        const itemDetails = `ID ${result.id}, Name: ${result.name}, Type: ${result.type}, Effect: ${result.effect}`;
+        const itemDetails = `ID: ${result.id}, Name: ${result.name}, Type: ${result.type}, Effect: ${result.effect}`;
         showResult(`Item updated:\n${itemDetails}`);
+
     } catch (error) {
         console.error('Error updating item:', error);
-        showResult(`Error updating item: ${error.message}`, true);
+        showResult(result.message);
     }
 }
 
 // Funciones para usuarios
-async function addUser(userData) {
+async function addUser() {
+    const userData = {
+        id: document.getElementById('newuserID').value,
+        username: document.getElementById('newuserName').value,
+        email: document.getElementById('newuserEmail').value,
+        items: [parseInt(document.getElementById('newuserItem').value)]
+    }
+
+    if (!userData.id || !userData.username || !userData.email || !userData.items) {
+        showResult('All fields are required', true);
+        return;
+    }
+
     try {
         const response = await fetch('http://localhost:7500/users/register', {
             method: "POST",
@@ -136,126 +185,177 @@ async function addUser(userData) {
         });
 
         const result = await response.json();
-        console.log(result.message);
-        if (result.user) {
-            console.log('User added:', result.user);
-            showResult(`User added`);
+
+        if (!response.ok) {
+            console.error('Error adding user');
         }
+
+        console.log(result.message);
+        showResult(result.message);
     } catch (error) {
-        console.error('Error adding user:', error);
-        showResult(`Error adding user: ${error.message}`, true);
+        console.error('Error adding user');
+        showResult('Error adding user', true);
     }
 }
 
 async function obtainUsers() {
     try {
-        const response = await fetch('http://localhost:7500/users');
-        const data = await response.json();
-
-        const usersList = users.map(user => 
-            `ID: ${user.id}, Name: ${user.username}, Items: ${user.items?.length || 0}`
-        ).join('\n\n');
-        
-        showResult(`Usuarios:\n${usersList}`);
-
-        console.log('Users:', data);
-    } catch (error) {
-        console.error('Error fetching users:', error);
-    }
-}
-
-async function getUserID(id) {
-    try {
-        const response = await fetch(`http://localhost:7500/users/${id}`, {
+        const response = await fetch('http://localhost:7500/users', {
             method: "GET",
             headers: { 'Content-Type': 'application/json' }
         });
 
-        const result = await response.json();
+        const data = await response.json();
 
-        if (!response.ok) {
-            console.error('Error:', result.message);
-            if (document.getElementById('errorMessage')) {
-                document.getElementById('errorMessage').innerText = result.message;
-            }
-            return;
-        }
-        
-        console.log('User details:', result);
-        if (document.getElementById('userDetails')) {
-            document.getElementById('userDetails').innerText = 
-                `ID: ${result.id}, Nombre: ${result.username}, Items: ${result.items.map(i => i.name).join(", ")}`;
-        }
+         const usersList = data.map(user => {
+            const itemsList = user.items?.length > 0 
+                ? user.items.join(', ') 
+                : 'None';
+            
+            return `ID: ${user.id}, Name: ${user.username}, Email: ${user.email}, Items: ${itemsList}`;
+        }).join('\n\n');
+
+        console.log('Users:', data);
+        showResult(`Users:\n${usersList}`);
     } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error('Error fetching users', true);
+        showResult('Error fetching user', true);
     }
 }
 
-async function deleteUserID(id) {
+async function getUserID() {
+    const userId = document.getElementById('userID').value;
+    
+    if (!userId) {
+        obtainUsers();
+        return;
+    }
+
+    const response = await fetch(`http://localhost:7500/users/${userId}`, {
+        method: "GET",
+        headers: { 'Content-Type': 'application/json' }
+    });
+     
+    const user = await response.json();
+
+    if (!response.ok) {
+        console.log(user.message);
+        showResult(user.message, true);
+        return;
+        }
+        
+    const itemsList = user.items?.length > 0 
+            ? user.items.join(', ') 
+            : 'None';
+        
+    const userDetails = [
+        `ID: ${user.id}, Name: ${user.username}, Email: ${user.email}, Items: ${itemsList}`
+    ].join('\n');
+
+    showResult(`User details:\n${userDetails}`);
+    console.log(user);
+}
+
+async function deleteUserID() {
+    const userData = {
+        id: document.getElementById('byeuserID').value,
+    };
+
+    if (!userData.id) {
+        showResult('ID is missing', true);
+        return;
+    }
+
     try {
-        const response = await fetch(`http://localhost:7500/users/delete/${id}`, {
+        const response = await fetch(`http://localhost:7500/users/delete/${userData.id}`, {
             method: "DELETE",
             headers: { 'Content-Type': 'application/json' }
         });
 
         const result = await response.json();
 
-        if (!response.ok) {
-            console.error('Error:', result.message);
-            if (document.getElementById('errorMessage')) {
-                document.getElementById('errorMessage').innerText = result.message;
-            }
-            return;
-        }
-
         console.log(result.message);
-        if (document.getElementById('userDeleted')) {
-            document.getElementById('userDeleted').innerText = `Usuario eliminado: ${result.user.username}`;
-        }
+        showResult(result.message);
     } catch (error) {
         console.error('Error deleting user:', error);
+        showResult(result.message);
     }
 }
 
-async function updateUserID(id, updates) {
-    try {
-        const response = await fetch(`http://localhost:7500/users/update/${id}`, {
-            method: "PATCH",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updates)
-        });
+async function updateUserID() {
+    const id = document.getElementById('updateuserID').value.trim();
+    const updates = {
+            username: document.getElementById('updateuserName').value,
+            email: document.getElementById('updateuserEmail').value,
+            items: document.getElementById('updateuserItems').value
+                .split(',')
+                .map(item => item.trim())
+                .filter(item => item !== '')
+                .map(Number)
+                .filter(item => !isNaN(item))
+        };
+    
+    if (!id) {
+        showResult('ID is missing', true);
+        return;
+    } 
+    
+    const response = await fetch(`http://localhost:7500/users/update/${id}`, {
+        method: "PATCH",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+    });
 
-        const result = await response.json();
+    const result = await response.json();
 
-        if (!response.ok) {
-            console.error('Error:', result.message);
-            if (document.getElementById('errorMessage')) {
-                document.getElementById('errorMessage').innerText = result.message;
-            }
-            return;
-        }
-
-        console.log(result.message);
-        console.log('Updated user:', result.user);
-        if (document.getElementById('userDetails')) {
-            document.getElementById('userDetails').innerText = `Actualizado: ${result.user.username}`;
-        }
-    } catch (error) {
-        console.error('Error updating user:', error);
+    if (!response.ok) {
+        console.log('Updated failed');
     }
+
+    console.log(result.message);
+    console.log('Updated user:', result.user);
+
+    const updatedUser = result.user || result;
+    const userDetails = [
+            `ID: ${updatedUser.id}`,
+            `Username: ${updatedUser.username}`,
+            `Email: ${updatedUser.email}`,
+            `Items: ${updatedUser.items?.join(', ') || 'None'}`
+        ].join(', ');
+
+    showResult(`User updated:\n${userDetails}`);
+    // showResult(result.message);
 }
 
 async function main() {
-    const buttonLoadPage = document.getElementById("paginaCreada");
-    const buttonNewItem = document.getElementById("newItem");
-    const buttonObtainItems = document.getElementById("obtainItems");
-    const buttonObtainItemsID = document.getElementById("obtainItemsID");
+    //const buttonLoadPage = document.getElementById("paginaCreada");
+    // buttonLoadPage.addEventListener('click', loadPage);
 
-    buttonLoadPage.addEventListener('click', loadPage);
+    // For ITEMS
+    const buttonNewItem = document.getElementById("newItem");
+    // const buttonObtainItems = document.getElementById("obtainItems");
+    const buttonObtainItemsID = document.getElementById("obtainItemsID");
+    const buttonDeleteItemsID = document.getElementById("deleteItem");
+    const buttonUpdateItemsID = document.getElementById("updateItem");
+
     buttonNewItem.addEventListener('click', newItem);
-    buttonObtainItems.addEventListener('click', obtainItems);
+   // buttonObtainItems.addEventListener('click', obtainItems);
     buttonObtainItemsID.addEventListener('click', obtainItemsID);
-    
+    buttonDeleteItemsID.addEventListener('click', deleteItem);
+    buttonUpdateItemsID.addEventListener('click', updateItem);
+
+    // For USERS
+    const buttonAddUser = document.getElementById("addUser");
+    // const buttonObtainUser = document.getElementById("obtainUsers");
+    const buttonGetUserID = document.getElementById("getUserID");
+    const buttonDeleteUserID = document.getElementById("deleteUserID");
+    const buttonUpdateUserID = document.getElementById("updateUserID");
+
+    buttonAddUser.addEventListener('click', addUser);
+    // buttonObtainUser.addEventListener('click', obtainUsers);
+    buttonGetUserID.addEventListener('click', getUserID);
+    buttonDeleteUserID.addEventListener('click', deleteUserID);
+    buttonUpdateUserID.addEventListener('click', updateUserID);
 }
 
 main();

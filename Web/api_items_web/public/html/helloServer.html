@@ -21,7 +21,7 @@
                 <thead>
                     <tr>
                         <th>Método</th>
-                        <th>Endpoint</th>
+<th>Endpoint</th>
                         <th>Descripción</th>
                     </tr>
                 </thead>
@@ -109,21 +109,124 @@
         </section>
     
         <!-- API en uso -->
-        <section>
+        <section id="pruebas">
             <h2>Poniendo a prueba nuestro API</h2>
-            <p>Da click en los botones para ver su efecto:</p>
             
-            <h3>Users</h3>
-                <button id="paginaCreada" type="button">Crear página</button>
-                <ul id="userList"></ul>
-
+            <!-- For items -->
+            <section id="gridItems">
             <h3>Items</h3>
-                <button id="newItem" type="button">New Items</button>
-                <ul id="itemList"></ul>
-                <button id="obtainItems" type="button">Obtain Items</button>
-                <ul id="itemList"></ul>
-                <button id="obtainItemsID" type="button">Obtain Items ID</button>
-                <ul id="itemList"></ul>
+            <div id="forma">
+                <div class="form-group">
+                    <label for="newItemID">ID:</label>
+                    <input type="text" id="newItemID" value="5">
+                </div>
+                <div class="form-group">
+                    <label for="itemName">Name:</label>
+                    <input type="text" id="itemName" value="Healing juice">
+                </div>
+                <div class="form-group">
+                    <label for="itemType">Type:</label>
+                    <input type="text" id="itemType" value="Potion">
+                </div>
+                <div class="form-group">
+                    <label for="itemEffect">Effect:</label>
+                    <input type="text" id="itemEffect" value="Healing">
+                </div>
+                <button id="newItem" type="button">New Item</button> </div> 
+            </div>
+
+            <div id="forma">
+                <div class="form-group">
+                    <label for="obtainID">ID:</label>
+                    <input type="text" id="obtainID">
+                <button id="obtainItemsID" type="button">Obtain Item</button></div> 
+            </div>
+
+            <div id="forma">
+                <div class="form-group">
+                    <label for="deleteitemID">ID:</label>
+                    <input type="text" id="deleteitemID" value="1">
+                <button id="deleteItem" type="button">Delete Item</button></div> 
+            </div>
+
+            <div id="forma">
+            <div class="form-group">
+                <label for="updateitemID">ID:</label>
+                <input type="text" id="updateitemID" value="1" required>
+            </div>
+            <div class="form-group">
+                <label for="updateitemName">Name (optional):</label>
+                <input type="text" id="updateitemName">
+            </div>
+            <div class="form-group">
+                <label for="updateitemType">Type (optional):</label>
+                <input type="text" id="updateitemType">
+            </div>
+            <div class="form-group">
+                <label for="updateitemEffect">Effect (optional):</label>
+                <input type="text" id="updateitemEffect">
+            </div>
+            <button id="updateItem" type="button">Update Item</button> </div>
+        </div> 
+        </section>
+
+        <!-- For users -->
+        <section id="gridUsers">
+            <h3>Users</h3>
+            <div id="forma">
+                <div class="form-group">
+                    <label for="newuserID">ID:</label>
+                    <input type="text" id="newuserID" value="6">
+                </div>
+                <div class="form-group">
+                    <label for="newuserName">Username:</label>
+                    <input type="text" id="newuserName" value="Kitty123">
+                </div>
+                <div class="form-group">
+                    <label for="newuserEmail">Email:</label>
+                    <input type="email" id="newuserEmail" value="kitty123@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label for="newuserItem">Items:</label>
+                    <input type="text" id="newuserItem" value="1">
+                </div>
+                <button id="addUser" type="button">Add User</button> </div> 
+            </div>
+
+            <div id="forma">
+                <div class="form-group">
+                    <label for="userID">ID:</label>
+                    <input type="text" id="userID">
+                <button id="getUserID" type="button">Obtain Users</button></div> 
+            </div>
+
+            <div id="forma">
+                <div class="form-group">
+                    <label for="byeuserID">ID:</label>
+                    <input type="text" id="byeuserID" value="1">
+                <button id="deleteUserID" type="button">Delete User</button></div> 
+            </div>
+
+            <div id="forma">
+                <div class="form-group">
+                    <label for="updateuserID">ID:</label>
+                    <input type="text" id="updateuserID" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="updateuserName">Username (optional):</label>
+                    <input type="text" id="updateuserName">
+                </div>
+                <div class="form-group">
+                    <label for="updateuserEmail">Email (optional):</label>
+                    <input type="email" id="updateuserEmail">
+                </div>
+                <div class="form-group">
+                    <label for="updateuserItems">Items (optional):</label>
+                    <input type="text" id="updateuserItems">
+                </div>
+            <button id="updateUserID" type="button">Update Item</button> </div>
+        </div> 
+        </section>
         </section>
 
         <!-- Resultados del API en uso -->
