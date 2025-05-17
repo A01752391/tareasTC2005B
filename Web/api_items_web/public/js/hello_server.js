@@ -201,28 +201,37 @@ async function addUser() {
 async function obtainUsers() {
     try {
         const response = await fetch('http://localhost:7500/users');
-        const data = await response.json();
-
-        const usersList = users.map(user => 
-            `ID: ${user.id}, Name: ${user.username}, Items: ${user.items?.length || 0}`
-        ).join('\n\n');
         
-        showResult(`Usuarios:\n${usersList}`);
+        if (!response.ok) {
+            const error = await response.json();
+            showResult('No users found');
+        }
 
-        console.log('Users:', data);
+        const users = await response.json();
 
-        const usersDetails = users.map(user => 
-            `ID: ${user.id}, Nombre: ${user.nombre}, Email: ${user.email}, Items: ${user.items?.length || 0}`
-        ).join('\n\n');
-        
-        showResult(`Users:\n${usersDetails}`);
+        const usersList = users.map(user => {
+            const itemsCount = Array.isArray(user.items) ? user.items.length : 0;
+            const itemsList = Array.isArray(user.items) ? user.items.join(', ') : 'None';
+            
+            return `ID: ${user.id}\nName: ${user.username || user.nombre}\nEmail: ${user.email}\nItems (${itemsCount}): ${itemsList}`;
+        }).join('\n\n');
+
+        showResult(`Users:\n${usersList}`);
+        console.log('Users data:', users);
     } catch (error) {
         console.error('Error fetching users:', error);
-        showResult('Error fetching users: ' + error.message, true);
+        showResult('Error fetching users:' + error.message, true);
     }
 }
 
-async function getUserID(id) {
+async function getUserID() {
+    const users = document.getElementById('getUserID').value;
+    
+    if (!users) {
+        obtainUsers();
+        return;
+    }
+
     try {
         const response = await fetch(`http://localhost:7500/users/${id}`, {
             method: "GET",
@@ -310,16 +319,11 @@ async function updateUserID() {
     console.log(result.message);
     console.log('Updated user:', result.user);
 
-    const updatedUser = result.user || result;
-    const userDetails = [
-            `ID: ${updatedUser.id}`,
-            `Username: ${updatedUser.username}`,
-            `Email: ${updatedUser.email}`,
-            `Items: ${updatedUser.items?.join(', ') || 'None'}`
-        ].join(', ');
-
-    showResult(`User updated:\n${userDetails}`);
-    // showResult(result.message);
+    const formattedUser = JSON.stringify(result, null, 2)
+            .replace(/"([^"]+)":/g, '$1:')
+            .replace(/"([^"]+)"/g, "'$1'");
+        
+    showResult(`${formattedUser}`);
 }
 
 async function main() {
