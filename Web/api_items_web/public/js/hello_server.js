@@ -200,60 +200,55 @@ async function addUser() {
 
 async function obtainUsers() {
     try {
-        const response = await fetch('http://localhost:7500/users', {
+        const response = await fetch('http://localhost:7500/users');
+        const data = await response.json();
+
+        const usersList = users.map(user => 
+            `ID: ${user.id}, Name: ${user.username}, Items: ${user.items?.length || 0}`
+        ).join('\n\n');
+        
+        showResult(`Usuarios:\n${usersList}`);
+
+        console.log('Users:', data);
+
+        const usersDetails = users.map(user => 
+            `ID: ${user.id}, Nombre: ${user.nombre}, Email: ${user.email}, Items: ${user.items?.length || 0}`
+        ).join('\n\n');
+        
+        showResult(`Users:\n${usersDetails}`);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        showResult('Error fetching users: ' + error.message, true);
+    }
+}
+
+async function getUserID(id) {
+    try {
+        const response = await fetch(`http://localhost:7500/users/${id}`, {
             method: "GET",
             headers: { 'Content-Type': 'application/json' }
         });
 
-        const data = await response.json();
+        const result = await response.json();
 
-         const usersList = data.map(user => {
-            const itemsList = user.items?.length > 0 
-                ? user.items.join(', ') 
-                : 'None';
-            
-            return `ID: ${user.id}, Name: ${user.username}, Email: ${user.email}, Items: ${itemsList}`;
-        }).join('\n\n');
-
-        console.log('Users:', data);
-        showResult(`Users:\n${usersList}`);
-    } catch (error) {
-        console.error('Error fetching users', true);
-        showResult('Error fetching user', true);
-    }
-}
-
-async function getUserID() {
-    const userId = document.getElementById('userID').value;
-    
-    if (!userId) {
-        obtainUsers();
-        return;
-    }
-
-    const response = await fetch(`http://localhost:7500/users/${userId}`, {
-        method: "GET",
-        headers: { 'Content-Type': 'application/json' }
-    });
-     
-    const user = await response.json();
-
-    if (!response.ok) {
-        console.log(user.message);
-        showResult(user.message, true);
-        return;
+        if (!response.ok) {
+            console.error('Error:', result.message);
+            showResult(`Error: ${errorData.message}`, true);
+            return;
         }
         
-    const itemsList = user.items?.length > 0 
-            ? user.items.join(', ') 
-            : 'None';
-        
-    const userDetails = [
-        `ID: ${user.id}, Name: ${user.username}, Email: ${user.email}, Items: ${itemsList}`
-    ].join('\n');
+        console.log('User details:', result);
+         const itemsList = user.items?.map(item => 
+            `- ${item.name} (${item.type})`
+        ).join('\n') || 'No items';
 
-    showResult(`User details:\n${userDetails}`);
-    console.log(user);
+        const userDetails = `ID: ${user.id}, Nombre: ${user.nombre}, Email: ${user.email}\nItems:\n${itemsList}`;
+        
+        showResult(`User:\n${userDetails}`);
+        
+    } catch (error) {
+        console.error('Error fetching user:', error);
+    }
 }
 
 async function deleteUserID() {
